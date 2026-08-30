@@ -1,0 +1,26 @@
+---
+description: classic-test-project 银行转账项目的编码约定
+globs: "**/*.py"
+alwaysApply: true
+---
+
+# 银行转账项目约定
+
+- 用面向对象建模：账户、流水、转账服务分开，不要把校验写进脚本主流程。
+- 金额一律使用 `Decimal`，禁止 `float`。
+- 限额、币种、小数位必须来自 `classic_bank/constants.py`，禁止魔法数字。
+- 失败路径要打 warning 或 exception 日志，成功路径打 info。
+- 改业务规则时同步补单元测试；`python -m unittest discover -s tests -v` 必须通过。
+- 转账必须先校验再扣款再入账；入账失败要回滚。
+
+```python
+# 错误
+balance = 10.0
+if amount > 50000:
+    raise ValueError("too much")
+
+# 正确
+from classic_bank.constants import MAX_SINGLE_TRANSFER
+if amount > MAX_SINGLE_TRANSFER:
+    raise TransferLimitExceededError("超出单笔转账限额")
+```
