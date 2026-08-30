@@ -3,8 +3,8 @@
 from decimal import Decimal
 
 from classic_bank.account import BankAccount
-from classic_bank.constants import CURRENCY_CODE, MIN_TRANSFER_AMOUNT
-from classic_bank.exceptions import InvalidAmountError, SameAccountError
+from classic_bank.constants import CURRENCY_CODE, MAX_SINGLE_TRANSFER, MIN_TRANSFER_AMOUNT
+from classic_bank.exceptions import InvalidAmountError, SameAccountError, TransferLimitExceededError
 from classic_bank.logger import get_logger
 
 logger = get_logger()
@@ -22,6 +22,15 @@ class TransferService:
             raise SameAccountError("不能向同一账户转账")
         if amount < MIN_TRANSFER_AMOUNT:
             raise InvalidAmountError("转账金额低于最低限额")
+        if amount > MAX_SINGLE_TRANSFER:
+            logger.warning(
+                "拒绝超额单笔转账 from=%s amount=%s limit=%s",
+                source.account_id,
+                amount,
+                MAX_SINGLE_TRANSFER,
+            )
+            raise TransferLimitExceededError("超出单笔转账限额")
+        # TODO: 应按 MAX_DAILY_TRANSFER 累计当日转出，当前未实现
 
         logger.info(
             "开始转账 from=%s to=%s amount=%s %s",

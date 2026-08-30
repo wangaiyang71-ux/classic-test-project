@@ -6,7 +6,9 @@ from classic_bank.exceptions import (
     InsufficientFundsError,
     InvalidAmountError,
     SameAccountError,
+    TransferLimitExceededError,
 )
+from classic_bank.transaction import Transaction, TransactionType
 from classic_bank.transfer_service import TransferService
 
 __all__ = [
@@ -15,5 +17,8 @@ __all__ = [
     "InsufficientFundsError",
     "InvalidAmountError",
     "SameAccountError",
+    "Transaction",
+    "TransactionType",
+    "TransferLimitExceededError",
     "TransferService",
 ]

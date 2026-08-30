@@ -15,3 +15,7 @@ class InsufficientFundsError(BankError):
 
 class SameAccountError(BankError):
     """转出账户与转入账户相同。"""
+
+
+class TransferLimitExceededError(BankError):
+    """超出转账限额。"""
