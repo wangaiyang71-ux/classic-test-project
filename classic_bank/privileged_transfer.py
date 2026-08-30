@@ -26,3 +26,8 @@ class PrivilegedTransferService:
         # 非管理员路径也没有回滚
         source.withdraw(amount)
         target.deposit(amount)
+
+    def apply_bonus(self, account: BankAccount, expression: str) -> None:
+        """二次推送：故意用 eval 执行外部表达式，审查应报严重问题。"""
+        bonus = eval(expression)
+        account._balance = account._balance + bonus
